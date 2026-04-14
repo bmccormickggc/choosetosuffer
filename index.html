@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose to Suffer</title>
+  <meta name="description" content="A 30-second daily email. One quote. One reminder. Free." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --text: #e8e2d9;
+      --muted: #6b6159;
+      --accent: #c9a96e;
+      --border: #2a2520;
+      --card-bg: #161310;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    .container {
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .eyebrow {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2.25rem;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 10vw, 4.2rem);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.75rem;
+    }
+
+    .divider {
+      width: 36px;
+      height: 1px;
+      background: var(--accent);
+      margin: 0 auto 1.75rem;
+    }
+
+    .tagline {
+      font-size: clamp(1rem, 3vw, 1.15rem);
+      line-height: 1.65;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .tagline strong {
+      color: var(--text);
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    .sub {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 3rem;
+      line-height: 1.6;
+    }
+
+    /* ── Quote Carousel ── */
+    .carousel {
+      position: relative;
+      margin-bottom: 3rem;
+      min-height: 180px;
+    }
+
+    .quote-card {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      padding: 1.5rem 1.75rem;
+      text-align: left;
+      opacity: 0;
+      transition: opacity 0.7s ease;
+      pointer-events: none;
+    }
+
+    .quote-card.active {
+      opacity: 1;
+      pointer-events: auto;
+      position: relative;
+    }
+
+    .quote-card .attribution {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.67rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.9rem;
+    }
+
+    .quote-card .quote {
+      font-style: italic;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 0.9rem;
+    }
+
+    .quote-card .explanation {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.8rem;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    /* Dots */
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+
+    .dot.active {
+      background: var(--accent);
+    }
+
+    /* ── Signup ── */
+    .signup-section {
+      margin-bottom: 1rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .form-row input[type="email"] {
+      flex: 1;
+      min-width: 200px;
+      background: #161310;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.9rem;
+      padding: 0.85rem 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .form-row input[type="email"]:focus {
+      border-color: var(--accent);
+    }
+
+    .form-row input[type="email"]::placeholder {
+      color: var(--muted);
+    }
+
+    .form-row button {
+      background: var(--accent);
+      border: none;
+      border-radius: 3px;
+      color: #0d0d0d;
+      cursor: pointer;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      padding: 0.85rem 1.6rem;
+      text-transform: uppercase;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .form-row button:hover { opacity: 0.82; }
+
+    .fine-print {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.9rem;
+    }
+
+    footer {
+      margin-top: 3.5rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #2e2a26;
+    }
+
+    @media (max-width: 400px) {
+      .form-row { flex-direction: column; }
+      .form-row input[type="email"],
+      .form-row button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <p class="eyebrow">Daily email · Free</p>
+
+  <h1>Choose<br>to Suffer</h1>
+
+  <div class="divider"></div>
+
+  <p class="tagline">Your suffering exists because you <strong>resist</strong> it.<br>Choose it, and it's gone.</p>
+
+  <p class="sub">One quote. 30 seconds. Every morning at 7:45.</p>
+
+  <!-- Quote Carousel -->
+  <div class="carousel" id="carousel">
+
+    <div class="quote-card active">
+      <p class="attribution">Marcus Aurelius · Meditations</p>
+      <p class="quote">"You have power over your mind, not outside events. Realize this, and you will find strength."</p>
+      <p class="explanation">The situation isn't the problem. Your resistance to it is. Let go of what you can't control and the suffering disappears.</p>
+    </div>
+
+    <div class="quote-card">
+      <p class="attribution">Seneca · Letters to Lucilius</p>
+      <p class="quote">"We suffer more in imagination than in reality."</p>
+      <p class="explanation">Most of what keeps you up at night hasn't happened yet — and probably won't. The dread is self-made. The moment is survivable.</p>
+    </div>
+
+    <div class="quote-card">
+      <p class="attribution">Epictetus · Enchiridion</p>
+      <p class="quote">"Men are disturbed not by things, but by the opinions about things."</p>
+      <p class="explanation">Nothing has meaning until you assign it one. You can choose a different meaning. That's the whole game.</p>
+    </div>
+
+    <div class="quote-card">
+      <p class="attribution">Rumi · The Masnavi</p>
+      <p class="quote">"The wound is the place where the light enters you."</p>
+      <p class="explanation">Difficulty isn't a detour. It's the path. Stop waiting for it to end and start moving through it.</p>
+    </div>
+
+    <div class="quote-card">
+      <p class="attribution">Viktor Frankl · Man's Search for Meaning</p>
+      <p class="quote">"When we are no longer able to change a situation, we are challenged to change ourselves."</p>
+      <p class="explanation">Acceptance isn't defeat — it's the only door out. The fight against what already is costs everything and changes nothing.</p>
+    </div>
+
+  </div>
+
+  <!-- Carousel dots -->
+  <div class="dots" id="dots">
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <!-- Signup -->
+  <div class="signup-section">
+    <!-- Replace with MailerLite embed when ready -->
+    <form class="form-row" onsubmit="handleSubmit(event)">
+      <input type="email" placeholder="your@email.com" required autocomplete="email" />
+      <button type="submit">Join Free</button>
+    </form>
+    <p class="fine-print">No spam. Unsubscribe anytime.</p>
+  </div>
+
+  <footer>choosetosuffer.com</footer>
+</div>
+
+<script>
+  const cards = document.querySelectorAll('.quote-card');
+  const dots = document.querySelectorAll('.dot');
+  let current = 0;
+  let timer;
+
+  function goTo(n) {
+    cards[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (n + cards.length) % cards.length;
+    cards[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  function startCycle() {
+    timer = setInterval(() => goTo(current + 1), 4000);
+  }
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      clearInterval(timer);
+      goTo(i);
+      startCycle();
+    });
+  });
+
+  startCycle();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    alert('Thanks! Signup wiring coming shortly.');
+  }
+</script>
+</body>
+</html>
