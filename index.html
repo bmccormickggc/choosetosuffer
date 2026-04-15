@@ -204,12 +204,29 @@
     }
 
     .form-row button:hover { opacity: 0.82; }
+    .form-row button:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .fine-print {
       font-family: 'Helvetica Neue', Arial, sans-serif;
       font-size: 0.7rem;
       color: var(--muted);
       margin-top: 0.9rem;
+    }
+
+    .signup-success {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.9rem;
+      color: var(--accent);
+      padding: 1rem 0;
+      display: none;
+    }
+
+    .signup-error {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.78rem;
+      color: #c97070;
+      margin-top: 0.6rem;
+      display: none;
     }
 
     footer {
@@ -287,11 +304,12 @@
 
   <!-- Signup -->
   <div class="signup-section">
-    <!-- Replace with MailerLite embed when ready -->
-    <form class="form-row" onsubmit="handleSubmit(event)">
-      <input type="email" placeholder="your@email.com" required autocomplete="email" />
-      <button type="submit">Join Free</button>
+    <form class="form-row" id="signup-form" onsubmit="handleSubmit(event)">
+      <input type="email" id="email-input" placeholder="your@email.com" required autocomplete="email" />
+      <button type="submit" id="submit-btn">Join Free</button>
     </form>
+    <div class="signup-success" id="signup-success">You're in. See you tomorrow morning.</div>
+    <div class="signup-error" id="signup-error">Something went wrong. Try again.</div>
     <p class="fine-print">No spam. Unsubscribe anytime.</p>
   </div>
 
@@ -299,6 +317,7 @@
 </div>
 
 <script>
+  // Quote carousel
   const cards = document.querySelectorAll('.quote-card');
   const dots = document.querySelectorAll('.dot');
   let current = 0;
@@ -326,9 +345,49 @@
 
   startCycle();
 
-  function handleSubmit(e) {
+  // MailerLite signup
+  async function handleSubmit(e) {
     e.preventDefault();
-    alert('Thanks! Signup wiring coming shortly.');
+    const email = document.getElementById('email-input').value.trim();
+    const btn = document.getElementById('submit-btn');
+    const successEl = document.getElementById('signup-success');
+    const errorEl = document.getElementById('signup-error');
+
+    btn.disabled = true;
+    btn.textContent = 'Joining...';
+    errorEl.style.display = 'none';
+
+    try {
+      const res = await fetch('https://connect.mailerlite.com/api/subscribers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZTkzYjk4OGQyNDA5MmUyOGExYjY5OTE3YjNlYzY1NmJhZDY0NmRmZjcwOTVhNzM3ZjFmNjljZWE4ZjRkNGFjNTI3Y2VmMjAyNDI4ODM2YzgiLCJpYXQiOjE3NDQ2NTEyMjMuMzI4MzYxLCJuYmYiOjE3NDQ2NTEyMjMuMzI4MzY0LCJleHAiOjQ5MDAzMjQ4MjMuMzI1OTQ3LCJzdWIiOiIyMDAzNDc4Iiwic2NvcGVzIjpbXX0.ZTr63gbW64bNBcGaVJDKBuRlwYBNOqOB4_yt0BIFXbh3vdMIL08H7IDMTc9UGT0MiVVgN0_bLB-N-zVlQSnMeXMRZqGJrLCH9kJ3a-cfPPXh_szAH0x9PnuRj-WuJJxT6o9D4P7Z_6tQnGMt5-rYEIfb2UZN9NcpGpMBxeRKQBFZ0J3w7N-HjCPnLcY5K5Sj8VcDvSPaD40QaEIXVRqzaM1gIllv5_6BhJOQFMF4iJiNaOQqfqvEdWa-6hK3VLHzTlTXCgJLW5TJMQ6zYRpRbbHc8q3KFPtS2FWYn6aXFfj8OTn4A7q0wBp5EvNxlHLERGTj3vWqCxBs0uFyEP2-8RJPZ7mnJ4c8t0y3h9FT2eLPasCPWLyMNnJqnAuRYbWH1PKM0BaJaUCxJfTbJbdnH3EKnR4K8vQ7MWNtSFTYAJKmx9n8YPvz6X3dLuBkE0QcHONRVvjWAh5YKsGJW9mPuBzX4nTcH2QrFDIyLTsE6MVkOpjnV2Yp3w',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          groups: ['174919960697505269']
+        })
+      });
+
+      if (res.ok || res.status === 200 || res.status === 201) {
+        document.getElementById('signup-form').style.display = 'none';
+        successEl.style.display = 'block';
+      } else {
+        const data = await res.json();
+        const msg = data?.message || data?.errors?.email?.[0] || 'Something went wrong.';
+        errorEl.textContent = msg;
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Join Free';
+      }
+    } catch (err) {
+      errorEl.textContent = 'Could not connect. Try again.';
+      errorEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Join Free';
+    }
   }
 </script>
 </body>
