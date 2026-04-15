@@ -9,12 +9,12 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d0d0d;
-      --text: #e8e2d9;
-      --muted: #6b6159;
-      --accent: #c9a96e;
-      --border: #2a2520;
-      --card-bg: #161310;
+      --bg: #f5f0e8;
+      --text: #2c2520;
+      --muted: #8a7d72;
+      --accent: #7a5c3a;
+      --border: #ddd5c8;
+      --card-bg: #ffffff;
     }
 
     body {
@@ -167,7 +167,7 @@
     .form-row input[type="email"] {
       flex: 1;
       min-width: 200px;
-      background: #161310;
+      background: #ffffff;
       border: 1px solid var(--border);
       border-radius: 3px;
       color: var(--text);
@@ -191,7 +191,7 @@
       background: var(--accent);
       border: none;
       border-radius: 3px;
-      color: #0d0d0d;
+      color: #ffffff;
       cursor: pointer;
       font-family: 'Helvetica Neue', Arial, sans-serif;
       font-size: 0.72rem;
@@ -235,7 +235,7 @@
       font-size: 0.65rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #2e2a26;
+      color: #b0a899;
     }
 
     @media (max-width: 400px) {
@@ -332,7 +332,7 @@
   }
 
   function startCycle() {
-    timer = setInterval(() => goTo(current + 1), 4000);
+    timer = setInterval(() => goTo(current + 1), 7000);
   }
 
   dots.forEach((dot, i) => {
