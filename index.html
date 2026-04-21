@@ -9,12 +9,12 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f5f0e8;
-      --text: #2c2520;
-      --muted: #8a7d72;
-      --accent: #7a5c3a;
-      --border: #ddd5c8;
-      --card-bg: #ffffff;
+      --bg: #0d0d0d;
+      --text: #e8e2d9;
+      --muted: #6b6159;
+      --accent: #c9a96e;
+      --border: #2a2520;
+      --card-bg: #161310;
     }
 
     body {
@@ -167,7 +167,7 @@
     .form-row input[type="email"] {
       flex: 1;
       min-width: 200px;
-      background: #ffffff;
+      background: #161310;
       border: 1px solid var(--border);
       border-radius: 3px;
       color: var(--text);
@@ -191,7 +191,7 @@
       background: var(--accent);
       border: none;
       border-radius: 3px;
-      color: #ffffff;
+      color: #0d0d0d;
       cursor: pointer;
       font-family: 'Helvetica Neue', Arial, sans-serif;
       font-size: 0.72rem;
@@ -204,7 +204,6 @@
     }
 
     .form-row button:hover { opacity: 0.82; }
-    .form-row button:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .fine-print {
       font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -213,29 +212,13 @@
       margin-top: 0.9rem;
     }
 
-    .signup-success {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      font-size: 0.9rem;
-      color: var(--accent);
-      padding: 1rem 0;
-      display: none;
-    }
-
-    .signup-error {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      font-size: 0.78rem;
-      color: #c97070;
-      margin-top: 0.6rem;
-      display: none;
-    }
-
     footer {
       margin-top: 3.5rem;
       font-family: 'Helvetica Neue', Arial, sans-serif;
       font-size: 0.65rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #b0a899;
+      color: #2e2a26;
     }
 
     @media (max-width: 400px) {
@@ -304,12 +287,11 @@
 
   <!-- Signup -->
   <div class="signup-section">
-    <form class="form-row" id="signup-form" onsubmit="handleSubmit(event)">
-      <input type="email" id="email-input" placeholder="your@email.com" required autocomplete="email" />
-      <button type="submit" id="submit-btn">Join Free</button>
+    <!-- Replace with MailerLite embed when ready -->
+    <form class="form-row" onsubmit="handleSubmit(event)">
+      <input type="email" placeholder="your@email.com" required autocomplete="email" />
+      <button type="submit">Join Free</button>
     </form>
-    <div class="signup-success" id="signup-success">You're in. See you tomorrow morning.</div>
-    <div class="signup-error" id="signup-error">Something went wrong. Try again.</div>
     <p class="fine-print">No spam. Unsubscribe anytime.</p>
   </div>
 
@@ -317,7 +299,6 @@
 </div>
 
 <script>
-  // Quote carousel
   const cards = document.querySelectorAll('.quote-card');
   const dots = document.querySelectorAll('.dot');
   let current = 0;
@@ -332,7 +313,7 @@
   }
 
   function startCycle() {
-    timer = setInterval(() => goTo(current + 1), 7000);
+    timer = setInterval(() => goTo(current + 1), 4000);
   }
 
   dots.forEach((dot, i) => {
@@ -345,49 +326,41 @@
 
   startCycle();
 
-  // MailerLite signup
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    const email = document.getElementById('email-input').value.trim();
-    const btn = document.getElementById('submit-btn');
-    const successEl = document.getElementById('signup-success');
-    const errorEl = document.getElementById('signup-error');
-
+    const form = e.target;
+    const email = form.querySelector('input[type="email"]').value.trim();
+    const btn = form.querySelector('button');
     btn.disabled = true;
     btn.textContent = 'Joining...';
-    errorEl.style.display = 'none';
 
-    try {
-      const res = await fetch('https://connect.mailerlite.com/api/subscribers', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZjBlOWZiMTAzZDYyODUwNzJkNjMyM2MwZDJiMDQ4OTc1YWVmYTFkYzliODU5ZDY3MGYyNjBkZWI5YmE1MWQ3M2MyOTE2ODY2M2VjMTFiYjUiLCJpYXQiOjE3NjY4MTQ3NDQuNjg0OTY4LCJuYmYiOjE3NjY4MTQ3NDQuNjg0OTcxLCJleHAiOjQ5MjI0ODgzNDQuNjc5NDM1LCJzdWIiOiIyMDIxMzQ2Iiwic2NvcGVzIjpbXX0.ScvTim5SX-UIn0acjqIkiQTAcxettyI4NHpyA2OSZpN_BQaK1gF8yaXd-Iizws_-dV5WRzl5Mqr5TDq48TMosrI8O5X8fTDIehCJa3qRqTqmG-tWp7bM5Vf5S03nOUHheCccBIt9e0_P00lMM6wGuZRZZd4uoRcc3753bg8hosIBut2lSuaUkScalWhEACe4d5kWcL9325vN2IcpiHG8kUHOi0eAIWsPAmxnsuKfV8y09n91fKO-gyjtrO-2JLKoXBZKtOKHgpHx52Vs_ZipbsYvOlj8U6JeEuxJ056HZXslNIibMbDb376vodl3vO5k2siK4KuDXkAzA52xsLgO-eaWVmXGyvTnVmBATmA0P4c6VQhKg3enNfabIvne1W-6Y5Zd6MJ7bSxwFU7tQ9Pznh5DNQCQF-NdBvjQO-a4NTysjaKwHrUT-Q2OwAcUcSCQufIB8IjegspAnz0Vwbd8ZEH_IzP4i5QbV-tqmEZ_HpTn_eynGhvvJtOV_pORM0DBJfTUj6bMxYPqYsYfIgWrwn0N7JABAHBX2gqsDX35nYZ5eDsYspdAnqsSt8SxcWVkumAEuIicCMwcJGfsSP95XSxPrLO2ZzkG8mHF9KUXRnt-7uEvZ2HJ5poh8BV9TalBWiYtawbIXHk89qw_6mhRfzCd9XZkCIE5FQrXri2v-wE',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          groups: ['174919960697505269']
-        })
-      });
-
-      if (res.ok || res.status === 200 || res.status === 201) {
-        document.getElementById('signup-form').style.display = 'none';
-        successEl.style.display = 'block';
+    fetch('https://connect.mailerlite.com/api/subscribers', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZjBlOWZiMTAzZDYyODUwNzJkNjMyM2MwZDJiMDQ4OTc1YWVmYTFkYzliODU5ZDY3MGYyNjBkZWI5YmE1MWQ3M2MyOTE2ODY2M2VjMTFiYjUiLCJpYXQiOjE3NjY4MTQ3NDQuNjg0OTY4LCJuYmYiOjE3NjY4MTQ3NDQuNjg0OTY4LCJleHAiOjE3OTgzNTA3NDQuNjc4OTA0LCJzdWIiOiIxMzQ1MDYzIiwic2NvcGVzIjpbXX0.nDL5u7bVEWuNPLsVTGVqk4q3e_pkHbfNEaxAg7wINBWqCNHjuIDR1kkpJvB2jJ3FP3T7K7KuGEHCHQ6WXyv-RLCJF7W5mWVuwDPJDSmYCn3VQfj3i0UbRQ_9RJNVpMiA18hvyCe0oKJxjZnbOXdwMl6Qoivir6RLBmtpNQNwzrJXkY0ASwCWRt3MZhD3JG2h3F0Vn5lUFP0-_7n7nPnhpibXe5Ls6JBa4h1AUW2ciBJaE_29WJNIX5GqXGxYxTJcJCO0GOuHPSGhZ6TwuQDomfx1oI3c5r_0pM6oy3rT1oC-C6LMBFh8tBLEUiWc6y-xLCsqaXlrh7dBkXM3uMfPHXjUGT3v9VmqxL9MYqMq3l4gkVGJ5kEmpvPEQS4LNqJ5dHIb2mGHWJijJRR2nHG3ZNbJHs4rDvmm8aTHHEbGSGr5BqolXvHFxYPlX2X6b5tCqBEFdqvHPxwpNAaBnPWdO6g3r9B3UFMV5xdF63HiCNxQD6j3b7KBzFSy9gNcGN48CmQ7P7Jq9ClyNsVHq9jCzs5TxQ'
+      },
+      body: JSON.stringify({
+        email: email,
+        groups: ['174919960697505269']
+      })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.data && data.data.email) {
+        btn.textContent = 'You\'re in ✓';
+        form.querySelector('input[type="email"]').value = '';
+      } else if (data.message && data.message.includes('already')) {
+        btn.textContent = 'Already subscribed';
       } else {
-        const data = await res.json();
-        const msg = data?.message || data?.errors?.email?.[0] || 'Something went wrong.';
-        errorEl.textContent = msg;
-        errorEl.style.display = 'block';
+        btn.textContent = 'Try again';
         btn.disabled = false;
-        btn.textContent = 'Join Free';
       }
-    } catch (err) {
-      errorEl.textContent = 'Could not connect. Try again.';
-      errorEl.style.display = 'block';
+    })
+    .catch(() => {
+      btn.textContent = 'Try again';
       btn.disabled = false;
-      btn.textContent = 'Join Free';
-    }
+    });
   }
 </script>
 </body>
