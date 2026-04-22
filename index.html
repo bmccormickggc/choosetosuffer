@@ -334,24 +334,20 @@
     btn.disabled = true;
     btn.textContent = 'Joining...';
 
-    fetch('https://connect.mailerlite.com/api/subscribers', {
+    const endpoint = window.location.hostname === 'choosetosuffer.netlify.app' || window.location.hostname === 'localhost'
+      ? '/.netlify/functions/subscribe'
+      : 'https://choosetosuffer.netlify.app/.netlify/functions/subscribe';
+
+    fetch(endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZjBlOWZiMTAzZDYyODUwNzJkNjMyM2MwZDJiMDQ4OTc1YWVmYTFkYzliODU5ZDY3MGYyNjBkZWI5YmE1MWQ3M2MyOTE2ODY2M2VjMTFiYjUiLCJpYXQiOjE3NjY4MTQ3NDQuNjg0OTY4LCJuYmYiOjE3NjY4MTQ3NDQuNjg0OTY4LCJleHAiOjE3OTgzNTA3NDQuNjc4OTA0LCJzdWIiOiIxMzQ1MDYzIiwic2NvcGVzIjpbXX0.nDL5u7bVEWuNPLsVTGVqk4q3e_pkHbfNEaxAg7wINBWqCNHjuIDR1kkpJvB2jJ3FP3T7K7KuGEHCHQ6WXyv-RLCJF7W5mWVuwDPJDSmYCn3VQfj3i0UbRQ_9RJNVpMiA18hvyCe0oKJxjZnbOXdwMl6Qoivir6RLBmtpNQNwzrJXkY0ASwCWRt3MZhD3JG2h3F0Vn5lUFP0-_7n7nPnhpibXe5Ls6JBa4h1AUW2ciBJaE_29WJNIX5GqXGxYxTJcJCO0GOuHPSGhZ6TwuQDomfx1oI3c5r_0pM6oy3rT1oC-C6LMBFh8tBLEUiWc6y-xLCsqaXlrh7dBkXM3uMfPHXjUGT3v9VmqxL9MYqMq3l4gkVGJ5kEmpvPEQS4LNqJ5dHIb2mGHWJijJRR2nHG3ZNbJHs4rDvmm8aTHHEbGSGr5BqolXvHFxYPlX2X6b5tCqBEFdqvHPxwpNAaBnPWdO6g3r9B3UFMV5xdF63HiCNxQD6j3b7KBzFSy9gNcGN48CmQ7P7Jq9ClyNsVHq9jCzs5TxQ'
-      },
-      body: JSON.stringify({
-        email: email,
-        groups: ['174919960697505269']
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
     })
     .then(r => r.json())
     .then(data => {
-      if (data.data && data.data.email) {
-        btn.textContent = 'You\'re in ✓';
+      if (data.success) {
+        btn.textContent = data.already ? 'Already subscribed' : 'You\'re in \u2713';
         form.querySelector('input[type="email"]').value = '';
-      } else if (data.message && data.message.includes('already')) {
-        btn.textContent = 'Already subscribed';
       } else {
         btn.textContent = 'Try again';
         btn.disabled = false;
