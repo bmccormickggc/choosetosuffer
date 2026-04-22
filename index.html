@@ -326,6 +326,9 @@
 
   startCycle();
 
+  const ML_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiMjkyZDBiMjk5YmE0NTc0ZWY2OWNkMzUzNTg5NjFhMDU1MDgwNGU4NzBlNTI2YzMyNGM1ZjExODVhZjk2NTg5ZDc2NDlkODkyMWZlNTI3NjQiLCJpYXQiOjE3NzY4MzMzMzcuODAyMTgyLCJuYmYiOjE3NzY4MzMzMzcuODAyMTg1LCJleHAiOjQ5MzI1MDY5MzcuNzk3MzIyLCJzdWIiOiIyMDIxMzQ2Iiwic2NvcGVzIjpbXX0.ENbTH6FvlViuLq7XPu-VyCBTkg79u0rTtxGmM1UpLaFXT2qZUYbRe9tarl04uhAKBJD_fu8C0SaLCDLLMHSvtXC_5YryQ4KapkyaOmJGZS4pEX1ThI5YNtt439jvJ2se6Qypf5w9NjAhN3jNpZ_OLpVg-qLFKN3KoY1cocgWuOjCUVr-_oaSlvzvICkaa6NsYAFWC-1IVgWnxPBdePG8fPs1IzIgyDFj48jCAdXgb7xcU1WsrZ9nih5AijcTW7RMBn5-MgutNLWhEc_QEkjJYj8dDMw5q-TBxo-TWwLEMcLo2lNvDRSer3IrCQddbQ2w-w8DT5vjO5v8DYHMf91cwjmql3jtjED3kUnrFzCxwCMRFhdIynBCCt9Nh6c0K2Wxa8lDuJPyZCpfhNwwYkNoiP56amk4c8SrYZRC_WmHJ6BCsMUMncPkaqtTaDT1g9ajMUEjlARrgj-qf-M_guzYTxbv0DxgySIEEFeMSokQAZqpgNzEVUsMR8n1sKaASCi_Bw4xKCBB5WCKZUalia65A25vCmzrVEwnYjqVvHpgFqU6A2VTaPaHKf2UdujQ_LOdSloHuP-9EhyjmYzfo2nPCQQFGRm0EgDj0lhoZINvafVuJSD0Bno7Vt6AgMqPqM1Dl7YrY-CUP1guZeh0Zz2k6AP_LaBS6F16akgM7bwQ80k';
+  const ML_GROUP = '174919960697505269';
+
   function handleSubmit(e) {
     e.preventDefault();
     const form = e.target;
@@ -334,25 +337,23 @@
     btn.disabled = true;
     btn.textContent = 'Joining...';
 
-    const endpoint = window.location.hostname === 'choosetosuffer.netlify.app' || window.location.hostname === 'localhost'
-      ? '/.netlify/functions/subscribe'
-      : 'https://choosetosuffer.netlify.app/.netlify/functions/subscribe';
-
-    fetch(endpoint, {
+    fetch('https://connect.mailerlite.com/api/subscribers', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email })
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ML_TOKEN },
+      body: JSON.stringify({ email: email, groups: [ML_GROUP] })
     })
-    .then(r => r.json())
-    .then(data => {
-      if (data.success) {
-        btn.textContent = data.already ? 'Already subscribed' : 'You\'re in \u2713';
+    .then(r => ({ status: r.status, json: r.json() }))
+    .then(({ status, json }) => json.then(data => {
+      if (status === 200 || status === 201) {
+        btn.textContent = '\u2713 You\'re in';
         form.querySelector('input[type="email"]').value = '';
+      } else if (status === 409) {
+        btn.textContent = 'Already subscribed';
       } else {
         btn.textContent = 'Try again';
         btn.disabled = false;
       }
-    })
+    }))
     .catch(() => {
       btn.textContent = 'Try again';
       btn.disabled = false;
