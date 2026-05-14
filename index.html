@@ -348,8 +348,8 @@
         if (status === 200 || status === 201) {
           btn.textContent = '\u2713 You\'re in';
           form.querySelector('input[type="email"]').value = '';
-        } else if (status === 422 && data.message) {
-          btn.textContent = data.message;
+        } else if (status === 422) {
+          btn.textContent = 'This address couldn\'t be added. If you previously unsubscribed, use a different email or resubscribe from an old email.';
           btn.disabled = false;
         } else {
           btn.textContent = 'Try again';
