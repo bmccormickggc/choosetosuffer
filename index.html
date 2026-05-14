@@ -342,19 +342,22 @@
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ML_TOKEN },
       body: JSON.stringify({ email: email, groups: [ML_GROUP] })
     })
-    .then(r => ({ status: r.status, json: r.json() }))
-    .then(({ status, json }) => json.then(data => {
-      if (status === 200 || status === 201) {
-        btn.textContent = '\u2713 You\'re in';
-        form.querySelector('input[type="email"]').value = '';
-      } else if (status === 409) {
-        btn.textContent = 'Already subscribed';
-      } else {
-        btn.textContent = 'Try again';
-        btn.disabled = false;
-      }
-    }))
-    .catch(() => {
+    .then(function(r) {
+      var status = r.status;
+      return r.json().then(function(data) {
+        if (status === 200 || status === 201) {
+          btn.textContent = '\u2713 You\'re in';
+          form.querySelector('input[type="email"]').value = '';
+        } else if (status === 422 && data.message) {
+          btn.textContent = data.message;
+          btn.disabled = false;
+        } else {
+          btn.textContent = 'Try again';
+          btn.disabled = false;
+        }
+      });
+    })
+    .catch(function() {
       btn.textContent = 'Try again';
       btn.disabled = false;
     });
