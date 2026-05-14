@@ -340,7 +340,7 @@
     fetch('https://connect.mailerlite.com/api/subscribers', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ML_TOKEN },
-      body: JSON.stringify({ email: email, groups: [ML_GROUP] })
+      body: JSON.stringify({ email: email, groups: [ML_GROUP], resubscribe: true })
     })
     .then(function(r) {
       var status = r.status;
